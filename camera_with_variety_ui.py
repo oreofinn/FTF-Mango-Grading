@@ -9,13 +9,13 @@ import sys
 import threading
 from collections import Counter, defaultdict
 
-# Flask imports
+
 from flask import Flask, request, redirect
 
-# TensorFlow for .keras models
+
 import tensorflow as tf
 
-# fix for numpy import on rpi
+
 import numpy.core
 sys.modules["numpy._core"] = numpy.core
 

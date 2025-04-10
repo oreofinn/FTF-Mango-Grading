@@ -10,7 +10,6 @@ Optional files for extended analysis:
 
 Dependencies:
   pandas, scikit-learn, joblib
-Install via: pip install pandas scikit-learn joblib
 """
 import pandas as pd
 import json
@@ -19,14 +18,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-# --- Step 1: Load data ---
-# Combined dataset (should contain target 'srp')
+
 df = pd.read_csv("final_dataset.csv")
-# Grade multipliers
 with open("grades.json") as f:
     grade_map = json.load(f)
 
-# Optional: load production costs
 try:
     prod_costs = pd.read_csv("production_costs.csv")
     df = df.merge(prod_costs, on="location", how="left")
