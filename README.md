@@ -8,67 +8,42 @@ This repository contains the code and resources for a real‑time mango grading 
 
 ## Table of Contents
 - [Requirements](#requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Requirements
 - Hardware
-- Raspberry Pi 5 (or Pi 4 with sufficient USB-C power)
-- Raspberry Pi Camera Module 3 (CSI interface)
-
-Optional: Weight sensors and servo motors for sorting mechanism
+- Raspberry Pi 5
+- Raspberry Pi Camera Module 3
 
 ### Software
-- **Operating System:** Raspberry Pi OS (64-bit recommended)
+- **Operating System:** Raspberry Pi OS
 - **Python:** 3.8 or higher
-- **System packages:**
+- **Python Libraries:**
   ```bash
-  sudo apt update
-  sudo apt install -y python3-pip python3-venv libatlas-base-dev libopencv-dev
-
-## Installation
-1. Clone this repository
-   ```bash
-   git clone https://github.com/oreoffinn/FTF-Mango-Grading.git
-   cd FTF-Mango-Grading
-2. Create and activate a virtual environment
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-3. Install Python dependencies
-   ```bash
-   pip install --upgrade pip
-   pip install -r requirements.txt
-
-## Configuration
-1. Place your trained CNN model files in the project root, named cnn_<variety>.keras (e.g., cnn_apple_mango.keras).
-
-2. Ensure your dataset folder (mango_dataset/) is present if you want to retrain or evaluate on local images.
+    Picamera2
+    opencv-python           # OpenCV for image processing
+    numpy                   # numerical computing
+    joblib                  # model serialization
+    tensorflow              # CNN inference and training
+    scikit-learn            # SRP regression model
+    flask                   # lightweight web framework
+    flask-socketio          # real-time updates
+    eventlet                # async worker for SocketIO
+    pandas                  # data manipulation (reports, cost analysis)
+    hx711                   # load-cell (weight sensor) interface
 
 ## Usage
-1. Start the Flask server
-   ```bash
-   export FLASK_APP=app.py
-   flask run --host=0.0.0.0 --port=5000
-   or simply:
-   python app.py
-2. **Access the dashboard**
+**Access the backend dashboard**
    Open a browser and navigate to http://IP-address>:5000 to view real‑time grading cards, defect percentages.
 
 ## Project Structure
 ```bash
 mango_grading/
 ├── camera_with_variety_ui.py            # UI for selecting and visualizing mango variety
-├── naming.py                            # Utility for consistent variety naming
 ├── inflation_rates_1994_2025.csv        # Historical inflation data
 ├── regenerate_inflation_files.py        # Script to update inflation datasets
 ├── train_all_varieties.py               # Train CNN models for each mango variety
-├── train_srp_model.py                   # Train SRP recommendation model
 ├── mango_model.pkl                      # Serialized baseline model (pickle)
 ├── cnn_apple_mango.keras                # Trained CNN for Apple mango classification
 ├── cnn_carabao_mango.keras              # Trained CNN for Carabao mango classification
