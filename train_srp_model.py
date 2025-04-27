@@ -1,16 +1,3 @@
-# train_srp_model.py
-"""
-Train a linear regression model to predict Suggested Retail Price (SRP) per kg of mangoes
-
-Required files:
-  - final_dataset.csv         # Combined dataset with columns: year, month (e.g. 'March'), location, mango_type, grade (A/B/C/Rejected), base_price, inflation_rate, srp
-  - grades.json               # JSON mapping grades to numeric multipliers, e.g. {"A":1.0, "B":0.8, "C":0.6, "Rejected":0.2}
-Optional files for extended analysis:
-  - production_costs.csv      # Columns: location, estimated_cost_per_kg
-
-Dependencies:
-  pandas, scikit-learn, joblib
-"""
 import pandas as pd
 import json
 import joblib
