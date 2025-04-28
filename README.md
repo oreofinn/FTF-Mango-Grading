@@ -40,6 +40,7 @@ This repository contains the code and resources for a real‑time mango grading 
 ## Project Structure
 ```bash
 mango_grading/
+├── srp_model.pkl                        # https://drive.google.com/file/d/1h1JY4kGywEmD6v2PchgckvD4H9qr7aSf/view?usp=sharing
 ├── cam_srp.py                           # UI for grading (current)
 ├── camera_with_variety_ui.py            # UI for grading (old)
 ├── inflation_rates_1994_2025.csv        # Historical inflation data
