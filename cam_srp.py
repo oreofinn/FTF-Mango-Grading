@@ -1,6 +1,5 @@
 import time
 import cv2
-import joblib
 import numpy as np
 from picamera2 import Picamera2
 from datetime import datetime
@@ -22,24 +21,37 @@ sys.modules['numpy._core'] = numpy.core
 # ---------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------
-DATASET_ROOT     = 'mango_dataset'
-MODEL_TMPL       = 'cnn_{}.keras'   # e.g. cnn_apple_mango.keras
-GRADES           = ['Grade A', 'Grade B', 'Grade C', 'Rejected']
+DATASET_ROOT   = 'mango_dataset'
+MODEL_TMPL     = 'cnn_{}.keras'       # e.g. cnn_apple_mango.keras
+GRADES         = ['Grade A','Grade B','Grade C','Rejected']
+SRP_PER_KG     = {'Grade A':120.0,'Grade B':90.0,'Grade C':60.0,'Rejected':0.0}
 
-# ---------------------------------------------------------------------
-# SRP Recommendations (PHP per kg)
-# ---------------------------------------------------------------------
-SRP_PER_KG = {
-    'Grade A': 120.0,
-    'Grade B':  90.0,
-    'Grade C':  60.0,
-    'Rejected':   0.0,
-}
+# Black/brown spot thresholds (% of area) for default (yellow) mangoes
+SPOT_THRESH_REJECT   = 5.0    # spot >5% -> Rejected
+SPOT_THRESH_C        = 2.0    # 2ï¿½5% -> Grade C
+SPOT_THRESH_B        = 0.5    # 0.5ï¿½2% -> Grade B
+
+# Wrinkle variance thresholds for default mangoes
+WRINKLE_THRESH_REJECT = 1200.0  # variance >1200 -> Rejected
+WRINKLE_THRESH_C      = 700.0   # >700 -> Grade C
+WRINKLE_THRESH_B      = 300.0   # >300 -> Grade B
+
+# Hue-defect fallback (% of area)
+DEFECT_THRESH_B       = 3.0     # >3% -> Grade B
+
+# Indian-mango lenient ï¿½natural spotï¿½ allowances
+SPOT_IND_REJECT      = 8.0    # spot >8% -> Rejected
+SPOT_IND_C           = 4.0    # 4ï¿½8%  -> Grade C
+SPOT_IND_B           = 1.0    # 1ï¿½4%  -> Grade B
+
+WRINKLE_IND_REJECT   = 1500.0
+WRINKLE_IND_C        = 900.0
+WRINKLE_IND_B        = 400.0
 
 # ---------------------------------------------------------------------
 # Globals
 # ---------------------------------------------------------------------
-app = Flask(__name__)
+app             = Flask(__name__)
 grade_counts    = defaultdict(int)
 last_grade      = None
 last_defect     = None
@@ -52,20 +64,19 @@ graded_once     = False
 # ---------------------------------------------------------------------
 @app.route('/', methods=['GET'])
 def index():
-    varieties = sorted([
+    varieties = sorted(
         d for d in os.listdir(DATASET_ROOT)
-        if os.path.isdir(os.path.join(DATASET_ROOT, d))
-    ])
+        if os.path.isdir(os.path.join(DATASET_ROOT,d))
+    )
     btns = ''
     for v in varieties:
-        border = '3px solid #000' if v == current_variety else '1px solid #888'
+        border = '3px solid #000' if v==current_variety else '1px solid #888'
         btns += (
             f"<form style='display:inline' method='POST' action='/select'>"
             f"<input type='hidden' name='var' value='{v}'/>"
             f"<button style='margin:5px;padding:8px;border:{border};'>{v}</button>"
             "</form>"
         )
-
     color_map = {
         'Grade A':'#3B7A57','Grade B':'#0066cc',
         'Grade C':'#ffcc00','Rejected':'#d9534f'
@@ -81,46 +92,34 @@ def index():
             f"{g}<br><span id='count-{short}'>{grade_counts[g]}</span>"
             "</div>"
         )
-
     last_html = (
-        f"Last Mango � Grade: <strong><span id='last-grade'>"
-        f"{last_grade or 'None'}</span></strong>, Defect: <strong>"
-        f"<span id='last-defect'>{(last_defect or 0.0):.1f}%</span>"
-        f"</strong><br/>SRP Recommendation: <strong>"
-        f"<span id='srp'>{SRP_PER_KG.get(last_grade, 0.0):.1f}"
-        f"</span></strong> PHP/kg"
+        f"Last Mango ï¿½ Grade: <strong><span id='last-grade'>{last_grade or 'None'}</span></strong>, "
+        f"Defect: <strong><span id='last-defect'>{(last_defect or 0.0):.1f}%</span></strong><br/>"
+        f"SRP: <strong><span id='srp'>{SRP_PER_KG.get(last_grade,0.0):.1f}</span></strong> PHP/kg"
     )
-
     return f"""
-<html>
-<head><title>Mango Grading</title></head>
-<body>
+<html><head><title>Mango Grading</title></head><body>
   <h1>Select variety:</h1>
   {btns}
   <hr/>
   <h2>Current: <em>{current_variety or 'none'}</em></h2>
   <div>{cards}</div>
-  <div style='clear:both;margin-top:60px;font-size:18px;' id='last-info'>
-    {last_html}
-  </div>
+  <div style='clear:both;margin-top:60px;font-size:18px;' id='last-info'>{last_html}</div>
   <script>
     async function fetchStatus() {{
-      try {{
-        let resp = await fetch('/status');
-        let js   = await resp.json();
-        document.getElementById('count-A').innerText = js.grade_counts['Grade A'];
-        document.getElementById('count-B').innerText = js.grade_counts['Grade B'];
-        document.getElementById('count-C').innerText = js.grade_counts['Grade C'];
-        document.getElementById('count-R').innerText = js.grade_counts['Rejected'];
-        document.getElementById('last-grade').innerText  = js.last_grade || 'None';
-        document.getElementById('last-defect').innerText = js.last_defect.toFixed(1) + '%';
-        document.getElementById('srp').innerText         = js.srp.toFixed(1);
-      }} catch(e) {{ console.warn('Status fetch failed:', e); }}
+      let resp = await fetch('/status');
+      let js   = await resp.json();
+      document.getElementById('count-A').innerText = js.grade_counts['Grade A'];
+      document.getElementById('count-B').innerText = js.grade_counts['Grade B'];
+      document.getElementById('count-C').innerText = js.grade_counts['Grade C'];
+      document.getElementById('count-R').innerText = js.grade_counts['Rejected'];
+      document.getElementById('last-grade').innerText  = js.last_grade || 'None';
+      document.getElementById('last-defect').innerText = js.last_defect.toFixed(1)+'%';
+      document.getElementById('srp').innerText         = js.srp.toFixed(1);
     }}
-    setInterval(fetchStatus, 500);
+    setInterval(fetchStatus,500);
   </script>
-</body>
-</html>
+</body></html>
 """
 
 @app.route('/select', methods=['POST'])
@@ -143,17 +142,16 @@ def select_variety():
         return f'Failed to load model: {e}', 500
 
     current_variety = v
-    grade_counts    = defaultdict(int)
+    grade_counts = defaultdict(int)
     return redirect('/')
 
 @app.route('/status', methods=['GET'])
 def status():
-    srp = SRP_PER_KG.get(last_grade, 0.0)
     return jsonify({
         'grade_counts': grade_counts,
         'last_grade':   last_grade,
         'last_defect':  last_defect or 0.0,
-        'srp':          srp,
+        'srp':          SRP_PER_KG.get(last_grade, 0.0),
     })
 
 def run_flask():
@@ -183,61 +181,54 @@ last_pred        = None
 stable_cnt       = 0
 
 VARIETY_COLOR_RANGES = {
-    'APPLE MANGO':   (np.array([20,100,100]), np.array([40,255,255])),
-    'CARABAO MANGO': (np.array([20,100,100]), np.array([40,255,255])),
-    'INDIAN MANGO':  (np.array([30,50,50]),    np.array([85,255,255])),
-    'PICO MANGO':    (np.array([20,100,100]), np.array([40,255,255])),
+    'APPLE MANGO':   (np.array([22,120,120]), np.array([35,255,255])),
+    'CARABAO MANGO': (np.array([18,100,100]), np.array([30,255,255])),
+    'INDIAN MANGO':  (np.array([35, 80,  80]), np.array([85,255,255])),
+    'PICO MANGO':    (np.array([20,120,120]), np.array([38,255,255])),
 }
 
 # ---------------------------------------------------------------------
 # Detection Function
 # ---------------------------------------------------------------------
 def detect_mango(image):
-    # 1) pick HSV range
     lower, upper = VARIETY_COLOR_RANGES.get(
         current_variety,
         VARIETY_COLOR_RANGES['APPLE MANGO']
     )
-    hsv  = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-    # 2) mask + closing to fill any holes in the fruit silhouette
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     raw_mask = cv2.inRange(hsv, lower, upper)
-    kernel   = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11,11))
-    mask     = cv2.morphologyEx(raw_mask, cv2.MORPH_CLOSE, kernel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11,11))
+    mask = cv2.morphologyEx(raw_mask, cv2.MORPH_CLOSE, kernel)
 
-    # 3) find the mango contour
     cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not cnts:
         return False, mask, 0, 0, 0, 0
     cnt = max(cnts, key=cv2.contourArea)
-    if cv2.contourArea(cnt) < 2000:   # raised from 500 to 2000 for stability
+    if cv2.contourArea(cnt) < 500:
         return False, mask, 0, 0, 0, 0
 
-    # 4) ROI mask & fruit area
     roi = np.zeros_like(mask)
     cv2.drawContours(roi, [cnt], -1, 255, -1)
     area = np.count_nonzero(roi)
 
-    # 5) color-based defect %
+    # color-defects %
     defect_mask = cv2.bitwise_and(roi, cv2.bitwise_not(mask))
-    defect_pct  = np.count_nonzero(defect_mask) / area * 100
+    defect_pct = np.count_nonzero(defect_mask) / area * 100
 
-    # 6) black/brown spot %
-    bad_mask  = cv2.inRange(hsv, np.array([0,0,0]), np.array([50,255,120]))
-    bad_roi   = cv2.bitwise_and(roi, bad_mask)
+    # black/brown spots %
+    bad_mask = cv2.inRange(hsv, np.array([0,0,0]), np.array([50,255,120]))
+    bad_roi = cv2.bitwise_and(roi, bad_mask)
     bad_close = cv2.morphologyEx(bad_roi, cv2.MORPH_CLOSE, kernel)
-    spot_pct  = np.count_nonzero(bad_close) / area * 100
+    spot_pct = np.count_nonzero(bad_close) / area * 100
 
-    # 7) wrinkle detection - blur first to reduce LED glare noise
-    gray      = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray_blur = cv2.GaussianBlur(gray, (9,9), 0)
-    lap       = cv2.Laplacian(gray_blur, cv2.CV_64F)
-    lap_roi   = lap * (roi/255)
+    # wrinkle variance
+    gray = cv2.GaussianBlur(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (9,9), 0)
+    lap_roi = cv2.Laplacian(gray, cv2.CV_64F) * (roi/255)
     wrinkle_var = lap_roi.var()
 
-    # 8) count large defect blobs (optional, you can drop if unused)
-    dcnts, _    = cv2.findContours(defect_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    large_defs  = sum(1 for c in dcnts if cv2.contourArea(c) > 300)
+    # count large defect blobs
+    dcnts, _ = cv2.findContours(defect_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    large_defs = sum(1 for c in dcnts if cv2.contourArea(c) > 300)
 
     return True, mask, defect_pct, large_defs, spot_pct, wrinkle_var
 
@@ -255,7 +246,6 @@ def camera_loop():
         for _ in range(5):
             yuv   = picam2.capture_array()
             frame = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
-            # rotate frame upside-down
             frame = cv2.rotate(frame, cv2.ROTATE_180)
             last_frame = frame
 
@@ -273,33 +263,64 @@ def camera_loop():
         # 3) full detection on the last rotated frame
         ok, mask, defect_pct, bigs, spot_pct, wrinkle_var = detect_mango(last_frame)
 
-        print(f"DEF={defect_pct:.1f}%, SPOT={spot_pct:.1f}%, WRINK={wrinkle_var:.0f}")
+        print(f"RAW ? spot={spot_pct:.1f}%, wrinkle={wrinkle_var:.0f}, defect={defect_pct:.1f}%")
 
+        # 4) annotate and count
         if ok and pred and not graded_once:
-        # 1) REJECT on massive black/brown spots
-            if spot_pct > 10.0:
-                grade = 'Rejected'
 
-            # 2) REJECT on very severe wrinkles
-            elif wrinkle_var > 1600:
-                grade = 'Rejected'
+            if current_variety == 'INDIAN MANGO':
+                # --- Indian-mango thresholds ---
+                # Black/brown spots
+                if spot_pct   > SPOT_IND_REJECT:
+                    grade = 'Rejected'
+                elif spot_pct > SPOT_IND_C:
+                    grade = 'Grade C'
+                elif spot_pct > SPOT_IND_B:
+                    grade = 'Grade B'
 
-            # 3) GRADE C on moderate wrinkles (even if spot_pct is low)
-            elif wrinkle_var > 800:
-                grade = 'Grade C'
+                # Wrinkles
+                elif wrinkle_var > WRINKLE_IND_REJECT:
+                    grade = 'Rejected'
+                elif wrinkle_var > WRINKLE_IND_C:
+                    grade = 'Grade C'
+                elif wrinkle_var > WRINKLE_IND_B:
+                    grade = 'Grade B'
 
-            # 4) GRADE C also on medium spots
-            elif spot_pct > 5.0:
-                grade = 'Grade C'
+                # Hue-defect fallback
+                elif defect_pct > DEFECT_THRESH_B:
+                    grade = 'Grade B'
 
-            # 5) GRADE B on mild wrinkles or small hue defects
-            elif wrinkle_var > 300 or defect_pct > 4.0 or spot_pct > 2.0:
-                grade = 'Grade B'
-
-            # 6) otherwise it�s Grade A
+                # Otherwise perfectly smooth
+                else:
+                    grade = 'Grade A'
+            
             else:
-                grade = 'Grade A'
+                # --- Default (yellow mango) thresholds ---
+                # Black/brown spots
+                if spot_pct   > SPOT_THRESH_REJECT:
+                    grade = 'Rejected'
+                elif spot_pct > SPOT_THRESH_C:
+                    grade = 'Grade C'
+                elif spot_pct > SPOT_THRESH_B:
+                    grade = 'Grade B'
 
+                # Wrinkles
+                elif wrinkle_var > WRINKLE_THRESH_REJECT:
+                    grade = 'Rejected'
+                elif wrinkle_var > WRINKLE_THRESH_C:
+                    grade = 'Grade C'
+                elif wrinkle_var > WRINKLE_THRESH_B:
+                    grade = 'Grade B'
+
+                # Hue-defect fallback
+                elif defect_pct > DEFECT_THRESH_B:
+                    grade = 'Grade B'
+
+                # Otherwise perfectly smooth
+                else:
+                    grade = 'Grade A'
+
+            # stability check & commit 
             if grade == last_pred:
                 stable_cnt += 1
             else:
@@ -308,39 +329,28 @@ def camera_loop():
 
             if stable_cnt >= stable_threshold:
                 grade_counts[grade] += 1
+                cv2.rectangle(last_frame, (0,0), (639,479), (0,255,0), 3)
+                cv2.putText(last_frame, grade, (10,40),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,255,0), 2)
+                cv2.putText(last_frame, f"{defect_pct:.1f}% defect", (10,80),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
+                last_grade   = grade
+                last_defect  = defect_pct
+                graded_once  = True
+                stable_cnt   = 0
 
-                # annotate on screen
-                h, w = last_frame.shape[:2]
-                cv2.rectangle(last_frame, (0, 0), (w-1, h-1), (0, 255, 0), 3)
-
-                cv2.putText(
-                    last_frame, grade, (10, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,255,0), 2
-                )
-                cv2.putText(
-                    last_frame, f"{defect_pct:.1f}% defect", (10, 80),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2
-                )
-
-                last_grade  = grade
-                last_defect = defect_pct
-                graded_once = True
-                stable_cnt  = 0
-
-        # display rotated preview & mask
+        # 5) display & reset
         cv2.imshow('Camera Preview', last_frame)
         cv2.imshow('Mask', mask)
-
-        # reset when no mango
         if not ok:
             graded_once = False
-
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     picam2.stop()
     cv2.destroyAllWindows()
 
+    
 if __name__ == '__main__':
     threading.Thread(target=run_flask, daemon=True).start()
     camera_loop()
