@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mango Grading Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/style/navigation-style.css">
+    <link rel="stylesheet" href="../static/style/index-style.css">
+    
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Component -->
+        <div id="navigation-container">
+            <script src="../static/script/navigation.js"></script>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Dashboard Summary</h1>
+            </div>
+            
+            <!-- Stock Overview Cards -->
+            <div class="cards-grid">
+                <div class="card grade-a">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <p>Grade A</p>
+                        <h3>1,250 kg</h3>
+                    </div>
+                </div>
+                <div class="card grade-b">
+                    <div class="card-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="card-content">
+                        <p>Grade B</p>
+                        <h3>850 kg</h3>
+                    </div>
+                </div>
+                <div class="card grade-c">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <p>Grade C</p>
+                        <h3>320 kg</h3>
+                    </div>
+                </div>
+                <div class="card grade-rejected">
+                    <div class="card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <p>Rejected</p>
+                        <h3>180 kg</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Charts -->
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h2>Stock Distribution</h2>
+                    <canvas id="stockChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="weekly-grading-trend">
+                        <h2>Weekly Grading Trend</h2>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="seasonal-performance">
+                        <!-- Seasonal Performance Chart placed inside the same container -->
+                        <h2>Seasonal Performance</h2>
+                        <canvas id="seasonalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h2>Recent Grading Activity</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Batch ID</th>
+                                <th>Date</th>
+                                <th>Grade A</th>
+                                <th>Grade B</th>
+                                <th>Grade C</th>
+                                <th>Rejected</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MG-2023-001</td>
+                                <td>2023-06-15</td>
+                                <td class="grade-a">120 kg</td>
+                                <td class="grade-b">85 kg</td>
+                                <td class="grade-c">30 kg</td>
+                                <td class="grade-rejected">15 kg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/script/dashcord.js"></script>
+</body>
+</html>

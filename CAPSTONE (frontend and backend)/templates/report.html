@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mango Grading - Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/style/navigation-style.css">
+    <link rel="stylesheet" href="../static/style/report-style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Component -->
+        <div id="navigation-container">
+            <script src="../static/script/navigation.js"></script>
+        </div>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Analytics Report</h1>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search..." />
+                <button id="search-btn" onclick="searchTable()">Enter</button>
+            </div>
+
+            <div class="report-section">
+
+                <!-- Tabs for Grading Categories -->
+                <div class="tabs">
+                    <!-- the dropdown you asked for: -->
+                    <select id="view-select">
+                      <option value="monthly">Select month</option>
+                      <option value="monthly">Jan</option>
+                      <option value="quarterly">Feb</option>
+                      <option value="quarterly">Mar</option>
+                      <option value="quarterly">Apr</option>
+                      <option value="quarterly">May</option>
+                      <option value="quarterly">Jun</option>
+                      <option value="quarterly">Jul</option>
+                      <option value="quarterly">Aug</option>
+                      <option value="quarterly">Sep</option>
+                      <option value="quarterly">Oct</option>
+                      <option value="quarterly">Nov</option>
+                      <option value="quarterly">Dec</option>
+                    </select>
+                  </div>
+           
+
+                    <div class="record-container">
+                        <!-- Top info section -->
+                        <div class="export-buttons">
+                            <button class="export-btn pdf">Export as PDF</button>
+                        </div>   
+                        <div class="info-grid">
+                            <h2>Batch/Farm Traceability</h2>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Farm Name</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Farm Location</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Supplier Name</div>
+                                <div class="info-value">--</div>
+                              </div>
+                              <div class="info-item">
+                                <div class="info-label">Mango Type</div>
+                                <div class="info-value">Carabao</div>
+                              </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Season</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Harvest Date</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Arrival Date</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+
+                        <div class="info-grid">
+                            <h2>Logistics & Cost Insight</h2>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Method</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Time</div>
+                              <div class="info-value">--</div>
+                            </div>
+                        </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Production Cost</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+                    
+                        <!-- GPA note -->
+                        <div class="CBbar">
+                          Cost-Benifits
+                        </div>
+                    
+                        <!-- Grades table -->
+                        <table class="record-table">
+                          <thead>
+                            <tr>
+                              <th>Grade</th>
+                              <th>Quantity/Kg</th>
+                              <th>Estimated Price per Unit</th>
+                              <th>Gross Revenue</th>
+                              <th>Allocated Production Cost</th>
+                              <th>Net Profit</th>
+                              <th>Profit Contribution</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Grade A</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade B</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade C</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr onclick="showRecommendationModal()">
+                              <td>Rejected</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+
+                    <div class="record-container">
+                        <!-- Top info section -->
+                        <div class="export-buttons">
+                            <button class="export-btn pdf">Export as PDF</button>
+                        </div>   
+                        <div class="info-grid">
+                            <h2>Batch/Farm Traceability</h2>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Farm Name</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Farm Location</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Supplier Name</div>
+                                <div class="info-value">--</div>
+                              </div>
+                              <div class="info-item">
+                                <div class="info-label">Mango Type</div>
+                                <div class="info-value">Indian</div>
+                              </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Season</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Harvest Date</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Arrival Date</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+
+                        <div class="info-grid">
+                            <h2>Logistics & Cost Insight</h2>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Method</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Time</div>
+                              <div class="info-value">--</div>
+                            </div>
+                        </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Production Cost</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+                    
+                        <!-- GPA note -->
+                        <div class="CBbar">
+                          Cost-Benifits
+                        </div>
+                    
+                        <!-- Grades table -->
+                        <table class="record-table">
+                          <thead>
+                            <tr>
+                              <th>Grade</th>
+                              <th>Quantity/Kg</th>
+                              <th>Estimated Price per Unit</th>
+                              <th>Gross Revenue</th>
+                              <th>Allocated Production Cost</th>
+                              <th>Net Profit</th>
+                              <th>Profit Contribution</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Grade A</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade B</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade C</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr onclick="showRecommendationModal()">
+                              <td>Rejected</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+
+                    <div class="record-container">
+                        <!-- Top info section -->
+                        <div class="export-buttons">
+                            <button class="export-btn pdf">Export as PDF</button>
+                        </div>   
+                        <div class="info-grid">
+                            <h2>Batch/Farm Traceability</h2>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Farm Name</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Farm Location</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Supplier Name</div>
+                                <div class="info-value">--</div>
+                              </div>
+                              <div class="info-item">
+                                <div class="info-label">Mango Type</div>
+                                <div class="info-value">Apple</div>
+                              </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Season</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Harvest Date</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Arrival Date</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+
+                        <div class="info-grid">
+                            <h2>Logistics & Cost Insight</h2>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Method</div>
+                              <div class="info-value">--</div>
+                            </div>
+                          </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                              <div class="info-label">Transportation Time</div>
+                              <div class="info-value">--</div>
+                            </div>
+                        </div>
+
+                          <div class="info-column">
+                            <div class="info-item">
+                                <div class="info-label">Production Cost</div>
+                                <div class="info-value">--</div>
+                              </div>
+                          </div>
+                        </div>
+                    
+                        <!-- GPA note -->
+                        <div class="CBbar">
+                          Cost-Benifits
+                        </div>
+                    
+                        <!-- Grades table -->
+                        <table class="record-table">
+                          <thead>
+                            <tr>
+                              <th>Grade</th>
+                              <th>Quantity/Kg</th>
+                              <th>Estimated Price per Unit</th>
+                              <th>Gross Revenue</th>
+                              <th>Allocated Production Cost</th>
+                              <th>Net Profit</th>
+                              <th>Profit Contribution</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Grade A</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade B</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr>
+                              <td>Grade C</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                            <tr onclick="showRecommendationModal()">
+                              <td>Rejected</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                              <td>--</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+
+                    <div class="record-container">
+                      <!-- Top info section -->
+                      <div class="export-buttons">
+                          <button class="export-btn pdf">Export as PDF</button>
+                      </div>   
+                      <div class="info-grid">
+                          <h2>Batch/Farm Traceability</h2>
+                        <div class="info-column">
+                          <div class="info-item">
+                            <div class="info-label">Farm Name</div>
+                            <div class="info-value">--</div>
+                          </div>
+                          <div class="info-item">
+                            <div class="info-label">Farm Location</div>
+                            <div class="info-value">--</div>
+                          </div>
+                        </div>
+
+                        <div class="info-column">
+                          <div class="info-item">
+                              <div class="info-label">Supplier Name</div>
+                              <div class="info-value">--</div>
+                            </div>
+                            <div class="info-item">
+                              <div class="info-label">Mango Type</div>
+                              <div class="info-value">Pico</div>
+                            </div>
+                        </div>
+                        <div class="info-column">
+                          <div class="info-item">
+                            <div class="info-label">Season</div>
+                            <div class="info-value">--</div>
+                          </div>
+                          <div class="info-item">
+                            <div class="info-label">Harvest Date</div>
+                            <div class="info-value">--</div>
+                          </div>
+                        </div>
+                        <div class="info-column">
+                          <div class="info-item">
+                              <div class="info-label">Arrival Date</div>
+                              <div class="info-value">--</div>
+                            </div>
+                        </div>
+                      </div>
+
+                      <div class="info-grid">
+                          <h2>Logistics & Cost Insight</h2>
+
+                        <div class="info-column">
+                          <div class="info-item">
+                            <div class="info-label">Transportation Method</div>
+                            <div class="info-value">--</div>
+                          </div>
+                        </div>
+
+                        <div class="info-column">
+                          <div class="info-item">
+                            <div class="info-label">Transportation Time</div>
+                            <div class="info-value">--</div>
+                          </div>
+                      </div>
+
+                        <div class="info-column">
+                          <div class="info-item">
+                              <div class="info-label">Production Cost</div>
+                              <div class="info-value">--</div>
+                            </div>
+                        </div>
+                      </div>
+                  
+                      <!-- GPA note -->
+                      <div class="CBbar">
+                        Cost-Benifits
+                      </div>
+                  
+                      <!-- Grades table -->
+                      <table class="record-table">
+                        <thead>
+                          <tr>
+                            <th>Grade</th>
+                            <th>Quantity/Kg</th>
+                            <th>Estimated Price per Unit</th>
+                            <th>Gross Revenue</th>
+                            <th>Allocated Production Cost</th>
+                            <th>Net Profit</th>
+                            <th>Profit Contribution</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Grade A</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                          </tr>
+                          <tr>
+                            <td>Grade B</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                          </tr>
+                          <tr>
+                            <td>Grade C</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                          </tr>
+                          <tr onclick="showRecommendationModal()">
+                            <td>Rejected</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                  </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Recommendation Modal -->
+    <div id="recommendation-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeRecommendationModal()">&times;</span>
+            <h2>Recommendation for Rejected Fruits</h2>
+            <p>Suggestions for improving the quality of rejected fruits:</p>
+            <ul>
+                <li>Ensure proper handling during transportation.</li>
+                <li>Inspect for pests and diseases before harvest.</li>
+                <li>Maintain optimal storage conditions.</li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    </style>
+
+    <script>
+    function showRecommendationModal() {
+        document.getElementById('recommendation-modal').style.display = 'block';
+    }
+
+    function closeRecommendationModal() {
+        document.getElementById('recommendation-modal').style.display = 'none';
+    }
+    </script>
+
+    <script src="script/report.js"></script>
+
+</body>
+</html>

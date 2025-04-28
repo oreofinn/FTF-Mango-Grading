@@ -1,0 +1,156 @@
+<!-- grading.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mango Grading - Grading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/style/navigation-style.css">
+    <link rel="stylesheet" href="../static/style/grading-style.css">
+</head>
+<body>
+    <div id="navigation-container">
+        <script src="../static/script/navigation.js"></script>
+    </div>
+    <main>
+        <h1>Grading and Classification</h1>
+        <div class="left-side">
+            <div class="info-table">
+                <table>
+                    <tr><td class="label">Farm Name:</td><td>{{ grading_data.farm_name }}</td></tr>
+                    <tr><td class="label">Farm Location:</td><td>{{ grading_data.farm_location }}</td></tr>
+                    <tr><td class="label">Supplier Name:</td><td>{{ grading_data.supplier_name }}</td></tr>
+                    <tr><td class="label">Season:</td><td>{{ grading_data.season }}</td></tr>
+                    <tr><td class="label">Harvest Date:</td><td>{{ grading_data.harvest_date }}</td></tr>
+                    <tr><td class="label">Arrival Date:</td><td>{{ grading_data.arrival_date }}</td></tr>
+                    <tr><td class="label">Mango Type:</td><td>{{ grading_data.mango_type }}</td></tr>
+                    <tr><td class="label">Transport Method:</td><td>{{ grading_data.transport_method }}</td></tr>
+                    <tr><td class="label">Transport Time:</td><td>{{ grading_data.transport_time }}</td></tr>
+                    <tr><td class="label">Production Cost:</td><td>₱{{ grading_data.production_cost }}</td></tr>
+                </table>
+            </div>
+            <div class="restart-btn-container">
+                <a href="/status"><button id="editBtn" class="btn restart">Edit</button></a>
+            </div>
+        </div>
+
+        <div class="video-feed">
+            <h2>Grading Process</h2>
+            <div class="video-container">
+                <video id="grading-video" poster="placeholder.jpg" autoplay muted loop></video>
+            </div>
+            <div class="video-controls">
+                <button id="startBtn" class="btn start">Start</button>
+                <button id="pauseBtn" class="btn pause">Pause</button>
+                <button id="stopBtn" class="btn stop">Stop</button>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card grade-a" data-grade="a">
+                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="card-content">
+                    <p>Grade A (Extra Class)</p>
+                    <h3><span id="count-A">0</span></h3>
+                </div>
+            </div>
+            <div class="card grade-b" data-grade="b">
+                <div class="card-icon"><i class="fas fa-check"></i></div>
+                <div class="card-content">
+                    <p>Grade B (Standard)</p>
+                    <h3><span id="count-B">0</span></h3>
+                </div>
+            </div>
+            <div class="card grade-c" data-grade="c">
+                <div class="card-icon"><i class="fas fa-exclamation-circle"></i></div>
+                <div class="card-content">
+                    <p>Grade C</p>
+                    <h3><span id="count-C">0</span></h3>
+                </div>
+            </div>
+            <div class="card grade-rejected" data-grade="rejected">
+                <div class="card-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="card-content">
+                    <p>Rejected</p>
+                    <h3><span id="count-Rejected">0</span></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade A Modal -->
+        <div class="modal" id="modal-a">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Grade A (Extra Class)</h2>
+            <p><strong>Quantity:</strong> 120 pcs</p>
+            <p><strong>Kilo:</strong> 120 pcs</p>
+            <p><strong>Estimated Price per Kilo:</strong> ₱35.00</p>
+            <p><strong>Gross Revenue:</strong> ₱4,200.00</p>
+            <p><strong>Allocated Production Cost:</strong> ₱1,000.00</p>
+            <p><strong>Net Profit:</strong> ₱3,200.00</p>
+            <p><strong>Profit Contribution:</strong> 40%</p>
+            <p><strong>Recommendation:</strong> Maintain optimal grading to maximize Grade A output. Invest in quality sorting equipment.</p>
+          </div>
+        </div>
+
+        <!-- Grade B Modal -->
+        <div class="modal" id="modal-b">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Grade B (Standard)</h2>
+            <p><strong>Quantity:</strong> 120 pcs</p>
+            <p><strong>QKilo:</strong> 120 pcs</p>
+            <p><strong>Estimated Price per Unit:</strong> ₱35.00</p>
+            <p><strong>Gross Revenue:</strong> ₱4,200.00</p>
+            <p><strong>Allocated Production Cost:</strong> ₱1,000.00</p>
+            <p><strong>Net Profit:</strong> ₱3,200.00</p>
+            <p><strong>Profit Contribution:</strong> 40%</p>
+            <p><strong>Recommendation:</strong> Maintain optimal grading to maximize Grade A output. Invest in quality sorting equipment.</p>
+          </div>
+        </div>
+
+        <!-- Grade C Modal -->
+        <div class="modal" id="modal-c">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Grade C (Extra Class)</h2>
+            <p><strong>Quantity:</strong> 120 pcs</p>
+            <p><strong>QKilo:</strong> 120 pcs</p>
+            <p><strong>Estimated Price per Unit:</strong> ₱35.00</p>
+            <p><strong>Gross Revenue:</strong> ₱4,200.00</p>
+            <p><strong>Allocated Production Cost:</strong> ₱1,000.00</p>
+            <p><strong>Net Profit:</strong> ₱3,200.00</p>
+            <p><strong>Profit Contribution:</strong> 40%</p>
+            <p><strong>Recommendation:</strong> Maintain optimal grading to maximize Grade A output. Invest in quality sorting equipment.</p>
+          </div>
+        </div>
+
+        <!-- Rejected Modal -->
+        <div class="modal" id="modal-rejected">
+          <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Rejected (Extra Class)</h2>
+            <p><strong>Quantity:</strong> 120 pcs</p>
+            <p><strong>QKilo:</strong> 120 pcs</p>
+            <p><strong>Estimated Price per Unit:</strong> ₱35.00</p>
+            <p><strong>Gross Revenue:</strong> ₱4,200.00</p>
+            <p><strong>Allocated Production Cost:</strong> ₱1,000.00</p>
+            <p><strong>Net Profit:</strong> ₱3,200.00</p>
+            <p><strong>Profit Contribution:</strong> 40%</p>
+            <p><strong>Recommendation:</strong> Maintain optimal grading to maximize Grade A output. Invest in quality sorting equipment.</p>
+          </div>
+        </div>
+    </main>
+
+    <script src="../static/script/grading.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      document.getElementById('startBtn').onclick = () => socket.emit('start_grading');
+      document.getElementById('pauseBtn').onclick = () => socket.emit('pause_grading');
+      document.getElementById('stopBtn').onclick = () => socket.emit('stop_grading');
+    </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+/* Navigation sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #1E293B;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 80px;
+    }
+    .sidebar:not(.collapsed) {
+        width: 250px;
+    }
+    .sidebar.collapsed {
+        width: 0;
+        overflow: hidden;
+    }
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #334155;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .logo {
+    display: none;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: #94A3B8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav li.active a {
+    background-color: #2D3748;
+    color: #fff;
+}
+
+.sidebar-nav a i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar.collapsed .sidebar-nav a span {
+    display: none;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #334155;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+}
+
+.sidebar.collapsed .avatar {
+    margin-right: 0;
+}
+
+.sidebar.collapsed .user-info span {
+    display: none;
+}
+
+/* Scrollbar styling */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Navigation Container */
+#navigation-container {
+    width: 250px;
+    background-color: #1a1f2c;
+    color: #f0f4f8;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Navigation Header */
+.nav-header {
+    padding: 15px 20px;
+    text-align: center;
+    background-color: #1a1f2c;
+    border-bottom: 1px solid #2d3446;
+}
+
+.nav-title {
+    font-size: 1.5rem; /* Increased font size for better visibility */
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Logo and Title - Prominent Mango Grading at top */
+.logo-container {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #2d3446;
+    background-color: #1e293b;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Main Navigation */
+.main-nav {
+    flex: 1;
+    padding: 10px 0;
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin-bottom: 5px;
+}
+
+.nav-item a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #a0b0c5;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.nav-item a:hover {
+    background-color: #2d3446;
+    color: #ffffff;
+}
+
+.nav-item.active a {
+    background-color: #2d3446;
+    color: #ffffff;
+    border-left: 3px solid #4fc3f7;
+}
+
+/* Adjust icon and text position */
+.nav-item i {
+    font-size: 1.2rem;
+    width: 25px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.nav-item span {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Navigation Footer */
+.nav-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #2d3446;
+    margin-top: auto;
+    background-color: #1e293b;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e6eaf0;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #a0b0c5;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #2d3446;
+    color: #a0b0c5;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    justify-content: center;
+}
+
+.logout-btn:hover {
+    background-color: #3d4456;
+    color: #ffffff;
+}
+
+.logout-btn i {
+    margin-right: 8px;
+}
+
+.logout-btn span {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Scrollbar styling */
+#navigation-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#navigation-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#navigation-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+#navigation-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    #navigation-container {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    #navigation-container.active {
+        transform: translateX(0);
+    }
+}
