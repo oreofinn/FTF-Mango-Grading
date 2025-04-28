@@ -40,7 +40,8 @@ This repository contains the code and resources for a real‑time mango grading 
 ## Project Structure
 ```bash
 mango_grading/
-├── camera_with_variety_ui.py            # UI for selecting and visualizing mango variety
+├── cam_srp.py                           # UI for grading (current)
+├── camera_with_variety_ui.py            # UI for grading (old)
 ├── inflation_rates_1994_2025.csv        # Historical inflation data
 ├── regenerate_inflation_files.py        # Script to update inflation datasets
 ├── train_all_varieties.py               # Train CNN models for each mango variety
